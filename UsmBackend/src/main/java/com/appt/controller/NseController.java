@@ -16,7 +16,7 @@ import com.appt.dto.NseResponseDto;
 import com.appt.model.Nse;
 import com.appt.service.NseService;
 
-@CrossOrigin("http://localhost:9867/")
+@CrossOrigin("http://localhost:9866/")
 @RestController
 @RequestMapping("/api/stocks")
 public class NseController {
@@ -40,8 +40,8 @@ public class NseController {
 	}
 	
 	@GetMapping("/symbol/")
-	public Nse getStocksBySymbol(@RequestParam String symbol){
-		return nseService.getBySymbol(symbol);   
+	public List<Nse> getStocksBySymbol(@RequestParam String symbol){
+		return nseService.getBySymbol(symbol);
 	}
 	
 	@GetMapping("/sector/")
@@ -55,8 +55,8 @@ public class NseController {
 	}
 	
 	@GetMapping("/security/")
-	public NseResponseDto getStockBySecurityName(@RequestParam String securityName) {
-		return nseService.fetchStockBySecurityName(securityName);
+	public List<NseResponseDto> getStockBySecurityName(@RequestParam String securityName) {
+		return nseService.fetchStocksBySecurityName(securityName);
 	}
 	
 }

@@ -34,33 +34,29 @@ class NseControllerTest {
 	NseRepository nseRepository;
 	
 	@Test
-	void findByIsinNoTest() {
-		String isinNo1 = "INE447A01015";
-		Nse nse1 = new Nse("500028", "India", "INR", "NSE", "40203030", "Capital Goods", "INE447A01015", "962", "Industrials", "ATV PROJECTS INDIA LTD.", "ATVPR");
-		
-		String isinNo2 = "INE117A01022";
-		Nse nse2 = new Nse("500002", "India", "INR", "NSE", "40203030", "Capital Goods", "INE117A01022", "581", "Industrials", "ABB India Limited", "ABB");
-		when(nseRepository.findByIsinNo(isinNo2)).thenReturn(nse2);
-
-	}
-	
-	@Test
 	void findBySymbolTest() {
 		String symbol = "BATAINDIA";
-		Nse nse = new Nse("500043", "India", "INR", "NSE", "2520", "Consumer Durables", "INE176A01028", "1557", "Consumer Discretionary", "BATA INDIA LTD.", "BATAINDIA");
+		List<Nse> list = new ArrayList<>();
+		list.add(new Nse("500043", "878.76", "India", "INR", "NSE", "2520", "Consumer Durables", "INE176A01028", "877.76","Consumer Discretionary", "BATA INDIA LTD.", "BATAINDIA"));
+		list.add(new Nse("500124", "98.76","India", "INR", "NSE", "35", "Healthcare", "INE089A01023", "97.76","Healthcare", "DR.REDDY'S LABORATORIES LTD.", "DRREDDY"));
 		
-		when(nseRepository.findBySymbol(symbol))
-		.thenReturn(nse);		
+		when(nseRepository.findBySymbolStartsWith(symbol))
+		.thenReturn(list);	
+		
+		int expected = 2;
+		int actual = nseService.getBySymbol(symbol).size();
+		
+		Assertions.assertEquals(expected,actual);
 	}
 	
 	@Test
 	void findBySectorTest() {
 		String sector = "Healthcare";
 		List<Nse> listNse = new ArrayList<>();
-		listNse.add(new Nse("500009", "India", "INR", "NSE", "35", "Healthcare", "INE432A01017", "195", "Healthcare", "AMBALAL SARABHAI ENTERPRISES LTD.", "AMBALALSA"));
-		listNse.add(new Nse("500124", "India", "INR", "NSE", "35", "Healthcare", "INE089A01023", "1463", "Healthcare", "DR.REDDY'S LABORATORIES LTD.", "DRREDDY"));
+		listNse.add(new Nse("500009", "87.76","India", "INR", "NSE", "35", "Healthcare", "INE432A01017", "86.76","Healthcare", "AMBALAL SARABHAI ENTERPRISES LTD.", "AMBALALSA"));
+		listNse.add(new Nse("500124", "98.76","India", "INR", "NSE", "35", "Healthcare", "INE089A01023", "97.76","Healthcare", "DR.REDDY'S LABORATORIES LTD.", "DRREDDY"));
 		
-		when(nseRepository.findBySector(sector)).thenReturn(listNse);
+		when(nseRepository.findBySectorContaining(sector)).thenReturn(listNse);
 		
 		int expected = 2;
 		int actual = nseService.findBySector(sector).size();
@@ -72,11 +68,11 @@ class NseControllerTest {
 		String industry = "Financial Services";
 		
 		List<Nse> listNse = new ArrayList<>();
-		listNse.add(new Nse("500111", "India", "INR", "NSE", "40201020", "Financial Services", "INE013A01015", "180", "Financial Services", "RELIANCE CAPITAL LTD.", "RELCAPITAL"));
-		listNse.add(new Nse("500112", "India", "INR", "NSE", "40201020", "Financial Services", "INE062A01020", "269", "Financial Services", "STATE BANK OF INDIA", "SBIN"));
-		listNse.add(new Nse("500116", "India", "INR", "NSE", "40201020", "Financial Services", "INE008A01015", "1016", "Financial Services", "IDBI BANK LTD.", "IDBI"));
+		listNse.add(new Nse("500111", "67.76","India", "INR", "NSE", "40201020", "Financial Services", "INE013A01015", "66.15","Financial Services", "RELIANCE CAPITAL LTD.", "RELCAPITAL"));
+		listNse.add(new Nse("500112", "105.65","India", "INR", "NSE", "40201020", "Financial Services", "INE062A01020", "105.6","Financial Services", "STATE BANK OF INDIA", "SBIN"));
+		listNse.add(new Nse("500116", "87.76","India", "INR", "NSE", "40201020", "Financial Services", "INE008A01015", "86.76","Financial Services", "IDBI BANK LTD.", "IDBI"));
 		
-		when(nseRepository.findByIndustry(industry)).thenReturn(listNse);
+		when(nseRepository.findByIndustryContaining(industry)).thenReturn(listNse);
 		
 		int expected = 3;
 		int actual = nseService.fetchByIndustry(industry).size();
@@ -86,14 +82,18 @@ class NseControllerTest {
 	
 	@Test
 	void findBySecurityNameTest() {
-		String securityName1 = "RELIANCE CAPITAL LTD.";
-		String securityName2 = "STATE BANK OF INDIA";
+		String securityName = "RELIANCE CAPITAL LTD.";
+
+		List<Nse> list = new ArrayList<>();
+		list.add(new Nse("500112", "2342.43","India", "INR", "NSE", "40201020", "Financial Services", "INE062A01020", "2342.43","Financial Services", "STATE BANK OF INDIA", "SBIN"));
+		list.add(new Nse("500111", "873.76","India", "INR", "NSE", "40201020", "Financial Services", "INE013A01015", "873.76","Financial Services", "RELIANCE CAPITAL LTD.", "RELCAPITAL"));
+		list.add(new Nse("500116", "87.76","India", "INR", "NSE", "40201020", "Financial Services", "INE008A01015", "86.76","Financial Services", "IDBI BANK LTD.", "IDBI"));
+		when(nseRepository.findBySecurityNameStartsWith(securityName)).thenReturn(list);
 		
-		Nse nse1 = new Nse("500111", "India", "INR", "NSE", "40201020", "Financial Services", "INE013A01015", "180", "Financial Services", "RELIANCE CAPITAL LTD.", "RELCAPITAL");
-		Nse nse2 = new Nse("500112", "India", "INR", "NSE", "40201020", "Financial Services", "INE062A01020", "269", "Financial Services", "STATE BANK OF INDIA", "SBIN");
+		int expected = 3;
+		int actual = nseService.fetchStocksBySecurityName(securityName).size();
 		
-		when(nseRepository.findBySecurityName(securityName1)).thenReturn(nse1);
-		when(nseRepository.findBySecurityName(securityName2)).thenReturn(nse2);
+		Assertions.assertEquals(expected, actual);
 		
 	}
 }

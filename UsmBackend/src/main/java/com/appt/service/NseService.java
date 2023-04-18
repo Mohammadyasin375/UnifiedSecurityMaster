@@ -6,21 +6,52 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appt.dto.NseResponseDto;
 import com.appt.model.Nse;
+import com.appt.model.Stock;
 import com.appt.repository.NseRepository;
-
-import javax.annotation.PostConstruct;
+import com.appt.repository.StocksRepository;
 
 @Service
 public class NseService {
 
 	@Autowired
 	private NseRepository nseRepo;
-	
+
+	@Autowired
+	private StocksRepository stockRepo;
+
+	@PostConstruct
+	public void newNseData() throws IOException {
+
+		String line = "";
+		BufferedReader br = new BufferedReader(new FileReader("src/main/resources/16AprilTrade.csv"));
+		try {
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+
+				Stock s = new Stock();
+
+				s.setSymbol(data[0]);
+				s.setSeries(data[1]);
+				s.setClose(data[2]);
+				s.setLast(data[3]);
+				s.setIsinNo(data[4]);
+
+				stockRepo.save(s);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			br.close();
+		}
+	}
 
 	@PostConstruct
 	public void saveNseData() throws IOException {
@@ -28,7 +59,7 @@ public class NseService {
 		String line = "";
 		BufferedReader br = new BufferedReader(new FileReader("src/main/resources/Stocks.csv"));
 		try {
-			
+
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(",");
 
@@ -42,14 +73,19 @@ public class NseService {
 				n.setExchange(data[6]);
 				n.setCurrency(data[7]);
 				n.setGics(data[8]);
-				n.setPrice(data[9]);
-				n.setCountry(data[10]);
+				n.setCountry(data[9]);
+
+				Stock stock = stockRepo.findByIsinNo(n.getIsinNo());
+				if (stock != null) {
+					n.setClose(stock.getClose());
+					n.setLast(stock.getLast());
+				}
 
 				nseRepo.save(n);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			br.close();
 		}
 	}
@@ -62,46 +98,47 @@ public class NseService {
 		return nseRepo.findByIsinNo(isinNo);
 	}
 
-	public Nse getBySymbol(String symbol) {
-		return nseRepo.findBySymbol(symbol);
+	public List<Nse> getBySymbol(String symbol) {
+		return nseRepo.findBySymbolStartsWith(symbol);
 	}
 
 	public List<Nse> findBySector(String sector) {
-		return nseRepo.findBySector(sector);
+		return nseRepo.findBySectorContaining(sector);
 	}
 
 	public List<NseResponseDto> fetchByIndustry(String industry) {
-		List<Nse> stocks = nseRepo.findByIndustry(industry);
+		List<Nse> stocks = nseRepo.findByIndustryContaining(industry);
 		List<NseResponseDto> listDto = new ArrayList<>();
-		
-		for(Nse nse:stocks) {
+
+		for (Nse nse : stocks) {
 			NseResponseDto dto = new NseResponseDto();
 			dto.setIsinNo(nse.getIsinNo());
-			dto.setSecurityCode(nse.getSecurityCode());
 			dto.setSecurityName(nse.getSecurityName());
 			dto.setSymbol(nse.getSymbol());
 			dto.setSector(nse.getSector());
 			dto.setIndustry(nse.getIndustry());
-			dto.setGics(nse.getGics());
-			dto.setPrice(nse.getPrice());
 			dto.setCountry(nse.getCountry());
 			listDto.add(dto);
 		}
 		return listDto;
 	}
 
-	public NseResponseDto fetchStockBySecurityName(String securityName) {
-		Nse stock = nseRepo.findBySecurityName(securityName);
-		NseResponseDto dto = new NseResponseDto();
-		dto.setIsinNo(stock.getIsinNo());
-		dto.setSecurityName(stock.getSecurityName());
-		dto.setSector(stock.getSector());
-		dto.setSymbol(stock.getSymbol());
-		dto.setIndustry(stock.getIndustry());
-		dto.setSecurityCode(stock.getSecurityCode());
-		dto.setGics(stock.getGics());
-		dto.setPrice(stock.getPrice());
-		dto.setCountry(stock.getCountry());
-		return dto;
+	public List<NseResponseDto> fetchStocksBySecurityName(String securityName) {
+		List<Nse> list = nseRepo.findBySecurityNameStartsWith(securityName);
+		List<NseResponseDto> listDto = new ArrayList<>();
+		for (Nse stock : list) {
+			NseResponseDto dto = new NseResponseDto();
+			dto.setIsinNo(stock.getIsinNo());
+			dto.setSecurityName(stock.getSecurityName());
+			dto.setSector(stock.getSector());
+			dto.setSymbol(stock.getSymbol());
+			dto.setIndustry(stock.getIndustry());
+			dto.setCountry(stock.getCountry());
+			dto.setLast(stock.getLast());
+			dto.setClose(stock.getClose());
+			
+			listDto.add(dto);
+		}
+		return listDto;
 	}
 }

@@ -2,21 +2,14 @@ package com.appt.dto;
 
 public class NseResponseDto {
 	
-	private String securityCode;
 	private String symbol;
 	private String securityName;
 	private String IsinNo;
 	private String sector;
 	private String industry;
-	private String price;
-	private String gics;
 	private String country;
-	public String getSecurityCode() {
-		return securityCode;
-	}
-	public void setSecurityCode(String securityCode) {
-		this.securityCode = securityCode;
-	}
+	private String close;
+	private String last;
 	public String getSymbol() {
 		return symbol;
 	}
@@ -47,45 +40,43 @@ public class NseResponseDto {
 	public void setIndustry(String industry) {
 		this.industry = industry;
 	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
-	public String getGics() {
-		return gics;
-	}
-	public void setGics(String gics) {
-		this.gics = gics;
-	}
 	public String getCountry() {
 		return country;
 	}
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	public String getClose() {
+		return close;
+	}
+	public void setClose(String close) {
+		this.close = close;
+	}
+	public String getLast() {
+		return last;
+	}
+	public void setLast(String last) {
+		this.last = last;
+	}
 	public NseResponseDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	public NseResponseDto(String securityCode, String symbol, String securityName, String isinNo, String sector,
-			String industry, String price, String gics, String country) {
+	public NseResponseDto(String symbol, String securityName, String isinNo, String sector, String industry,
+			String country, String close, String last) {
 		super();
-		this.securityCode = securityCode;
 		this.symbol = symbol;
 		this.securityName = securityName;
 		IsinNo = isinNo;
 		this.sector = sector;
 		this.industry = industry;
-		this.price = price;
-		this.gics = gics;
 		this.country = country;
+		this.close = close;
+		this.last = last;
 	}
 	@Override
 	public String toString() {
-		return "NseResponseDto [securityCode=" + securityCode + ", symbol=" + symbol + ", securityName=" + securityName
-				+ ", IsinNo=" + IsinNo + ", sector=" + sector + ", industry=" + industry + ", price=" + price
-				+ ", gics=" + gics + ", country=" + country + "]";
+		return "NseResponseDto [symbol=" + symbol + ", securityName=" + securityName + ", IsinNo=" + IsinNo
+				+ ", sector=" + sector + ", industry=" + industry + ", country=" + country + ", close=" + close
+				+ ", last=" + last + "]";
 	}
 }

@@ -16,8 +16,9 @@ public class Nse {
 	private String exchange;
 	private String currency;
 	private String gics;
-	private String price;
 	private String country;
+	private String close;
+	private String last;
 	public String getSecurityCode() {
 		return securityCode;
 	}
@@ -72,24 +73,26 @@ public class Nse {
 	public void setGics(String gics) {
 		this.gics = gics;
 	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
 	public String getCountry() {
 		return country;
 	}
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public Nse() {
-		super();
-		// TODO Auto-generated constructor stub
+	public String getClose() {
+		return close;
+	}
+	public void setClose(String close) {
+		this.close = close;
+	}
+	public String getLast() {
+		return last;
+	}
+	public void setLast(String last) {
+		this.last = last;
 	}
 	public Nse(String securityCode, String symbol, String securityName, String isinNo, String sector, String industry,
-			String exchange, String currency, String gics, String price, String country) {
+			String exchange, String currency, String gics, String country, String close, String last) {
 		super();
 		this.securityCode = securityCode;
 		this.symbol = symbol;
@@ -100,13 +103,21 @@ public class Nse {
 		this.exchange = exchange;
 		this.currency = currency;
 		this.gics = gics;
-		this.price = price;
 		this.country = country;
+		this.close = close;
+		this.last = last;
+	}
+	public Nse() {
+		super();
+		
 	}
 	@Override
 	public String toString() {
 		return "Nse [securityCode=" + securityCode + ", symbol=" + symbol + ", securityName=" + securityName
 				+ ", isinNo=" + isinNo + ", sector=" + sector + ", industry=" + industry + ", exchange=" + exchange
-				+ ", currency=" + currency + ", gics=" + gics + ", price=" + price + ", country=" + country + "]";
+				+ ", currency=" + currency + ", gics=" + gics + ", country=" + country + ", close=" + close + ", last="
+				+ last + "]";
 	}
+	
+	
 }
