@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appt.dto.NseResponseDto;
+import com.appt.exception.ResourceNotFoundException;
 import com.appt.model.Nse;
 import com.appt.model.Stock;
 import com.appt.repository.NseRepository;
@@ -95,15 +97,32 @@ public class NseService {
 	}
 
 	public Nse findByIsinNo(String isinNo) {
-		return nseRepo.findByIsinNo(isinNo);
+		Optional<Nse> stock = nseRepo.findByIsinNo(isinNo);
+		if(stock.isPresent()) {
+			return stock.get();
+		} else {
+			throw new ResourceNotFoundException("Stock not Found with ISIN No:"+isinNo);
+		}
 	}
 
-	public List<Nse> getBySymbol(String symbol) {
-		return nseRepo.findBySymbolStartsWith(symbol);
+	public List<Nse> getBySymbol(String symbol) throws ResourceNotFoundException{
+		List<Nse> stock = nseRepo.findBySymbolStartsWith(symbol);
+		if(stock==null) {
+			throw new ResourceNotFoundException("Stock not Found with symbol:"+symbol);
+		} else {
+			return stock;
+		}
+		
 	}
 
 	public List<Nse> findBySector(String sector) {
-		return nseRepo.findBySectorContaining(sector);
+		List<Nse> stock = nseRepo.findBySectorContaining(sector);
+		if(stock!=null) {
+			return stock;
+		} else {
+			throw new ResourceNotFoundException("Stocks not Found with sector:"+sector);
+		}
+		
 	}
 
 	public List<NseResponseDto> fetchByIndustry(String industry) {

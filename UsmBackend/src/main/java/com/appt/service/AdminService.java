@@ -1,5 +1,7 @@
 package com.appt.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,8 +50,8 @@ public class AdminService {
 	}
 	
 	public void updateStockByIsin(Nse nse,String isinNo) {
-		Nse stock = nseRepository.findByIsinNo(isinNo);
-	    
+		Optional<Nse> s = nseRepository.findByIsinNo(isinNo);
+	    Nse stock = s.get();
 		stock.setSecurityName(nse.getSecurityName());
 		stock.setSector(nse.getSector());
 		stock.setIndustry(nse.getIndustry());
@@ -63,6 +65,6 @@ public class AdminService {
 	}
 	
 	public void deleteStock(String isinNo) {
-		nseRepository.deleteByIsinNo(isinNo);
+		nseRepository.deleteById(isinNo);
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.appt.service.MyUserDetailsService;
 
+@SuppressWarnings("deprecation")
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
@@ -29,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/api/member/all").hasAuthority("ADMIN")
+//				.antMatchers(HttpMethod.PUT, "/api/admin/update/{isinNo}").hasAuthority("Admin")
 
 				.antMatchers(HttpMethod.GET, "/api/user/login").authenticated().anyRequest().permitAll().and()
 				.httpBasic().and().csrf().disable();
