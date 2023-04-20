@@ -98,66 +98,77 @@ public class NseService {
 
 	public Nse findByIsinNo(String isinNo) {
 		Optional<Nse> stock = nseRepo.findByIsinNo(isinNo);
-		if(stock.isPresent()) {
+		if (stock.isPresent()) {
 			return stock.get();
 		} else {
-			throw new ResourceNotFoundException("Stock not Found with ISIN No:"+isinNo);
+			throw new ResourceNotFoundException("Stock not Found with ISIN No:" + isinNo);
 		}
 	}
 
-	public List<Nse> getBySymbol(String symbol) throws ResourceNotFoundException{
+	public List<Nse> getBySymbol(String symbol) throws ResourceNotFoundException {
 		List<Nse> stock = nseRepo.findBySymbolStartsWith(symbol);
-		if(stock==null) {
-			throw new ResourceNotFoundException("Stock not Found with symbol:"+symbol);
+		if (stock == null) {
+			throw new ResourceNotFoundException("Stock not Found with symbol:" + symbol);
 		} else {
 			return stock;
 		}
-		
+
 	}
 
 	public List<Nse> findBySector(String sector) {
 		List<Nse> stock = nseRepo.findBySectorContaining(sector);
-		if(stock!=null) {
+		if (stock != null) {
 			return stock;
 		} else {
-			throw new ResourceNotFoundException("Stocks not Found with sector:"+sector);
+			throw new ResourceNotFoundException("Stocks not Found with sector:" + sector);
 		}
-		
+
 	}
 
 	public List<NseResponseDto> fetchByIndustry(String industry) {
 		List<Nse> stocks = nseRepo.findByIndustryContaining(industry);
-		List<NseResponseDto> listDto = new ArrayList<>();
+		if (stocks != null) {
+			List<NseResponseDto> listDto = new ArrayList<>();
 
-		for (Nse nse : stocks) {
-			NseResponseDto dto = new NseResponseDto();
-			dto.setIsinNo(nse.getIsinNo());
-			dto.setSecurityName(nse.getSecurityName());
-			dto.setSymbol(nse.getSymbol());
-			dto.setSector(nse.getSector());
-			dto.setIndustry(nse.getIndustry());
-			dto.setCountry(nse.getCountry());
-			listDto.add(dto);
+			for (Nse nse : stocks) {
+				NseResponseDto dto = new NseResponseDto();
+				dto.setIsinNo(nse.getIsinNo());
+				dto.setSecurityName(nse.getSecurityName());
+				dto.setSymbol(nse.getSymbol());
+				dto.setSector(nse.getSector());
+				dto.setIndustry(nse.getIndustry());
+				dto.setCountry(nse.getCountry());
+				dto.setClose(nse.getClose());
+				dto.setLast(nse.getLast());
+				listDto.add(dto);
+			}
+			return listDto;
+		} else {
+			throw new ResourceNotFoundException("Please enter valid Industry!");
 		}
-		return listDto;
+
 	}
 
 	public List<NseResponseDto> fetchStocksBySecurityName(String securityName) {
 		List<Nse> list = nseRepo.findBySecurityNameStartsWith(securityName);
-		List<NseResponseDto> listDto = new ArrayList<>();
-		for (Nse stock : list) {
-			NseResponseDto dto = new NseResponseDto();
-			dto.setIsinNo(stock.getIsinNo());
-			dto.setSecurityName(stock.getSecurityName());
-			dto.setSector(stock.getSector());
-			dto.setSymbol(stock.getSymbol());
-			dto.setIndustry(stock.getIndustry());
-			dto.setCountry(stock.getCountry());
-			dto.setLast(stock.getLast());
-			dto.setClose(stock.getClose());
-			
-			listDto.add(dto);
+		if(list!=null) {
+			List<NseResponseDto> listDto = new ArrayList<>();
+			for (Nse stock : list) {
+				NseResponseDto dto = new NseResponseDto();
+				dto.setIsinNo(stock.getIsinNo());
+				dto.setSecurityName(stock.getSecurityName());
+				dto.setSector(stock.getSector());
+				dto.setSymbol(stock.getSymbol());
+				dto.setIndustry(stock.getIndustry());
+				dto.setCountry(stock.getCountry());
+				dto.setLast(stock.getLast());
+				dto.setClose(stock.getClose());
+
+				listDto.add(dto);
+			}
+			return listDto;
+		} else {
+			throw new ResourceNotFoundException("Please enter valid sector!");
 		}
-		return listDto;
 	}
 }

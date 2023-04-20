@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appt.dto.NseResponseDto;
 import com.appt.model.Nse;
-import com.appt.repository.NseRepository;
 import com.appt.service.NseService;
 
 @CrossOrigin("http://localhost:7818/")
@@ -26,9 +25,6 @@ public class NseController {
 
 	@Autowired
 	private NseService nseService;
-	
-	@Autowired
-	private NseRepository nseRepo;
 	
 	@PostMapping("/insert")
 	public void setDataInDB() throws IOException {
